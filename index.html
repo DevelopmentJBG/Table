@@ -1,0 +1,202 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"><!-- comment -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    </head>
+    <body>
+        <div class="container-fluid  mt-3">
+            <div class="card w-100 p-0">
+                <div class="card-header">
+                    <h1 style="border-bottom: 1px solid #265a88">Roster Table</h1>
+                    <div class="row w-100">
+                        <label for="date" class="form-label">Months</label>
+                        <div class="col-3">
+                            <input type="month" id="date" name="date" class="form-control" onchange="Gernerate_Roster();">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="table"></div>
+                </div>
+                <div class="card-footer text-end">
+                    <button class="btn btn-success" style="width:70px">Save </button>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+        <script>
+                                function Gernerate_Roster() {
+                                    var date = document.getElementById('date').value.split('-');
+//                                    console.log(date.length);
+//                                    console.log(new Date(date[0], date[1], 0).getDate());
+                                    if (date.length > 1) {
+                                        var obj = '{"emps":[' +
+                                                '{"id":"100007", "name":"Net Chanmony"},' +
+                                                '{"id":"100760", "name":"Nea Titchamrong"},' +
+                                                '{"id":"1000026", "name":"Eng Sokmean"},' +
+                                                '{"id":"100686", "name":"Sorn Sothea"},' +
+                                                '{"id":"102450", "name":"Chhoem Sopheak"},' +
+                                                '{"id":"102562", "name":"Chim Chanoudom"},' +
+                                                '{"id":"100801", "name":"Ma Raty"}]}';
+                                        var data = JSON.parse(obj);
+//                                        console.log(data.emps.length);
+                                        var number0fday = new Date(date[0], date[1], 0).getDate();
+                                        //Generate Table Header
+                                        var Table_Stru = '<thead>';
+                                        Table_Stru += '<tr >';
+                                        Table_Stru += '<th style="padding:2px" rowspan="2">N<sup>o</sup></th>';
+                                        Table_Stru += '<th style="padding:2px" rowspan="2">Employee ID</th>';
+                                        Table_Stru += '<th style="padding:2px" rowspan="2">Employee Name</th>';
+                                        for (var i = 1; i <= number0fday; i++) {
+                                            if ((new Date(date[0], date[1], i).toLocaleDateString('en-US', {weekday: 'short'})).toLowerCase() === 'sun') {
+                                                Table_Stru += '<th style="padding:0px; background-color:red; color:white;">' + (new Date('2022', '7', i).toLocaleDateString('en-US', {weekday: 'short'})) + '</th>';
+                                            } else {
+                                                Table_Stru += '<th style="padding:0px">' + (new Date('2022', '7', i).toLocaleDateString('en-US', {weekday: 'short'})) + '</th>';
+                                            }
+                                        }
+                                        Table_Stru += '</tr> <tr>';
+                                        for (var i = 1; i <= number0fday; i++) {
+                                            Table_Stru += '<th style="padding:0px">' + i + '</th>';
+                                        }
+                                        Table_Stru += '</tr> </thead> <tbody>';
+                                        // Generate Table Data
+
+                                        for (var i = 0; i < data.emps.length; i++) {
+                                            Table_Stru += '<tr>';
+                                            Table_Stru += '<td style="padding-left:0px;">' + (i + 1) + '</td>';
+                                            Table_Stru += '<td style="padding-left:0px;">' + (data.emps[i].id) + '</td>';
+                                            Table_Stru += '<td class="padding-left:0px;">' + (data.emps[i].name) + '</td>';
+                                            for (var cell = 0; cell < number0fday; cell++) {
+                                                Table_Stru += '<td style="padding-top:2px;width:50px;">--</td>';
+                                            }
+                                            Table_Stru += '</tr>';
+                                        }
+                                        Table_Stru += '</tbody>';
+                                        document.getElementById('table').innerHTML = '<table class="table table-bordered text-center" id="roster">' + Table_Stru + '</table>';
+                                        var Table_data = document.getElementById('roster');
+                                        for (var i = 2; i < Table_data.rows.length; i++) {
+                                            var r = Table_data.rows[i];
+                                            for (var c = 3; c < r.cells.length; c++) {
+                                                r.cells[c].onclick = function () {
+                                                    if (this.hasAttribute('data-click')) {
+                                                        return;
+                                                    }
+                                                    this.setAttribute('data-click', 'yes');
+                                                    this.setAttribute('data-text', this.innerHTML);
+                                                    var select_type = document.createElement('select');
+                                                    select_type.name = 'type';
+                                                    select_type.id = 'type';
+                                                    select_type.setAttribute('style', 'width:100%;');
+                                                    var type_obj = ["--", "M1", "N1", "M2", "N2", "M3", "N3", "OFF", "AL", "PH", "SL", "ML", "NPL", "AB", "SUS", "MRL", "PL", "FL", "21RL"];
+                                                    for (var t = 0; t < type_obj.length; t++) {
+                                                        var opt = document.createElement('Option');
+                                                        opt.setAttribute('value', type_obj[t]);
+                                                        var text = document.createTextNode(type_obj[t]);
+                                                        opt.appendChild(text);
+                                                        select_type.appendChild(opt);
+                                                        select_type.value = this.innerHTML;
+                                                    }
+                                                    // Remove Select Element from Cell                            
+                                                    $(select_type).blur(function () {
+                                                        //console.log('Cell focusout!');
+                                                        var td = select_type.parentElement;
+                                                        var orgi_text = select_type.parentElement.getAttribute('data-text');
+                                                        console.log(orgi_text);
+                                                        var current_text = select_type.options[select_type.selectedIndex].value;
+                                                        console.log('this is orginal text :' + orgi_text);
+                                                        console.log('this is current text :' + current_text);
+                                                        if (orgi_text !== '--' && current_text === '--') {
+                                                            td.innerHTML = orgi_text;
+                                                        }
+                                                        //Insert or Update Data in here
+                                                        td.removeAttribute('data-click');
+                                                        td.removeAttribute('data-text');
+                                                        td.innerHTML = current_text;
+                                                        //Hightlight Color
+                                                        Hightlight(td,current_text);
+                                                    });
+                                                    this.style.cssText = "padding: 0px 0px;";
+                                                    this.innerHTML = '';
+                                                    this.appendChild(select_type);
+                                                    console.log(select_type.value);
+
+                                                };
+                                            }
+                                        }
+                                    } else {
+                                        alert('Please Select Months');
+                                    }
+                                }
+                                ;
+                                function Hightlight(td, text) {
+                                    switch (text) {
+                                        case 'M1':
+                                            //td.style.cssText = "padding: 0px 0px;";
+                                            td.setAttribute('style', 'background-color:#ffcc66;padding:8px 0px;');
+                                            break;
+                                        case 'N1':
+                                            td.setAttribute('style', 'background-color:#1ad1ff;padding:8px 0px;');
+                                            break;
+                                        case 'M2':
+                                            td.setAttribute('style', 'background-color:#ffff99;padding:8px 0px;');
+                                            break;
+                                        case 'N2':
+                                            td.setAttribute('style', 'background-color:#d633ff;padding:8px 0px;');
+                                            break;
+                                        case 'M3':
+                                            td.setAttribute('style', 'background-color:#ccff33;padding:8px 0px;');
+                                            break;
+                                        case 'N3':
+                                            td.setAttribute('style', 'background-color:#ff8080;padding:8px 0px;');
+                                            break;
+                                        case 'OFF':
+                                            td.setAttribute('style', 'background-color:#0099ff;padding:8px 0px;');
+                                            break;
+                                        case 'AL':
+                                            td.setAttribute('style', 'background-color:#0099ff;padding:8px 0px;');
+                                            break;
+                                        case 'PH':
+                                            td.setAttribute('style', 'background-color:#0099ff;padding:8px 0px;');
+                                            break;
+                                        case 'SL':
+                                            td.setAttribute('style', 'background-color:#0099ff;padding:8px 0px;');
+                                            break;
+                                        case 'NPL':
+                                            td.setAttribute('style', 'background-color:#0099ff;padding:8px 0px;');
+                                            break;
+                                        case 'AB':
+                                            td.setAttribute('style', 'background-color:#0099ff;padding:8px 0px;');
+                                            break;
+                                        case 'SUS':
+                                            td.setAttribute('style', 'background-color:#0099ff;padding:8px 0px;');
+                                            break;
+                                        case 'MRL':
+                                            td.setAttribute('style', 'background-color:#0099ff;padding:8px 0px;');
+                                            break;
+                                        case 'PL':
+                                            td.setAttribute('style', 'background-color:#0099ff;padding:8px 0px;');
+                                            break;
+                                        case 'FL':
+                                            td.setAttribute('style', 'background-color:#0099ff;padding:8px 0px;');
+                                            break;
+                                        case '21RL':
+                                            td.setAttribute('style', 'background-color:#0099ff;padding:8px 0px;');
+                                            break;
+                                        default:
+
+                                            break;
+                                    }
+                                }
+        </script>
+    </body>
+</html>
